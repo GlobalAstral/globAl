@@ -18,8 +18,8 @@ typedef struct GlobMetadata {
   __CHAR alt_filename[14];
 } GlobMetadata;
 
-typedef int (*GlobCallback)(GlobMetadata*);
+typedef int (*GlobCallback)(GlobMetadata*, void*);
 
-int glob_foreach(__CHAR* location, GlobCallback callback);
+int glob_foreach(__CHAR* location, GlobCallback callback, void* extra);
 
 #undef __CHAR

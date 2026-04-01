@@ -8,7 +8,7 @@
 
 #define COMBINE_DWORDS(high, low) ( ( (unsigned long long)(high) << 32 ) | (unsigned long long)(low) )
 
-int glob_foreach(__CHAR* location, GlobCallback callback) {
+int glob_foreach(__CHAR* location, GlobCallback callback, void* extra) {
   WIN32_FIND_DATA data;
   HANDLE hfind = FindFirstFile(location, &data);
 
@@ -26,7 +26,7 @@ int glob_foreach(__CHAR* location, GlobCallback callback) {
       data.cFileName,
       data.cAlternateFileName
     };
-    int r = callback(&metadata);
+    int r = callback(&metadata, extra);
     if (r) {
       FindClose(hfind);
       return r;
