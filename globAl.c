@@ -13,18 +13,21 @@ int glob_foreach(__CHAR* location, GlobCallback callback, void* extra) {
   HANDLE hfind = FindFirstFile(location, &data);
 
   if (hfind == INVALID_HANDLE_VALUE) {
-    return 1;
+    int err = GetLastError();
+    if (err == ERROR_FILE_NOT_FOUND)
+      return 0;
+    return err;
   }
 
   do {
     GlobMetadata metadata = {
-      data.dwFileAttributes,
-      COMBINE_DWORDS(data.ftCreationTime.dwHighDateTime, data.ftCreationTime.dwLowDateTime),
-      COMBINE_DWORDS(data.ftLastAccessTime.dwHighDateTime, data.ftLastAccessTime.dwLowDateTime),
-      COMBINE_DWORDS(data.ftLastWriteTime.dwHighDateTime, data.ftLastWriteTime.dwLowDateTime),
-      COMBINE_DWORDS(data.nFileSizeHigh, data.nFileSizeLow),
-      data.cFileName,
-      data.cAlternateFileName
+      .attributes = data.dwFileAttributes,
+      .creation_time = COMBINE_DWORDS(data.ftCreationTime.dwHighDateTime, data.ftCreationTime.dwLowDateTime),
+      .last_access_time = COMBINE_DWORDS(data.ftLastAccessTime.dwHighDateTime, data.ftLastAccessTime.dwLowDateTime),
+      .last_modification_time = COMBINE_DWORDS(data.ftLastWriteTime.dwHighDateTime, data.ftLastWriteTime.dwLowDateTime),
+      .file_size = COMBINE_DWORDS(data.nFileSizeHigh, data.nFileSizeLow),
+      .filename = data.cFileName,
+      .alt_filename = data.cAlternateFileName,
     };
     int r = callback(&metadata, extra);
     if (r) {
