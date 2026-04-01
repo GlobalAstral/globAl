@@ -26,8 +26,8 @@ int glob_foreach(__CHAR* location, GlobCallback callback, void* extra) {
       .last_access_time = COMBINE_DWORDS(data.ftLastAccessTime.dwHighDateTime, data.ftLastAccessTime.dwLowDateTime),
       .last_modification_time = COMBINE_DWORDS(data.ftLastWriteTime.dwHighDateTime, data.ftLastWriteTime.dwLowDateTime),
       .file_size = COMBINE_DWORDS(data.nFileSizeHigh, data.nFileSizeLow),
-      .filename = data.cFileName,
-      .alt_filename = data.cAlternateFileName,
+      .filename = strdup(data.cFileName),
+      .alt_filename = strdup(data.cAlternateFileName),
     };
     int r = callback(&metadata, extra);
     if (r) {

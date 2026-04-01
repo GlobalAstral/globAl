@@ -14,8 +14,8 @@ typedef struct GlobMetadata {
   unsigned long long last_access_time;
   unsigned long long last_modification_time;
   size_t file_size;
-  __CHAR filename[MAX_PATH];
-  __CHAR alt_filename[14];
+  __CHAR* filename;
+  __CHAR* alt_filename;
 } GlobMetadata;
 
 typedef int (*GlobCallback)(GlobMetadata*, void*);
